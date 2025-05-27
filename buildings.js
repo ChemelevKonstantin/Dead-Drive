@@ -40,4 +40,46 @@ const zones = [
     // ...add more zones as needed
 ];
 
-export { buildings, zones }; 
+// Decoration elements
+// type: 'unbreakable', 'breakable', 'small', 'decal'
+// ragdoll: true/false, collision: true/false, breakable: true/false
+const decorations = [
+    // 1) Big unbreakable ragdoll objects (e.g. big trashcan, big electronic furniture)
+    {
+        x: 50, y: -200, width: 60, height: 60, img: 'images/decoration/big_trashcan.png',
+        type: 'unbreakable', ragdoll: true, collision: true, breakable: false
+    },
+    {
+        x: 200, y: 500, width: 80, height: 40, img: 'images/decoration/big_tv.png',
+        type: 'unbreakable', ragdoll: true, collision: true, breakable: false
+    },
+    // 2) Breakable ragdoll objects (e.g. trashcan, sign)
+    {
+        x: 400, y: 200, width: 40, height: 40, img: 'images/decoration/trashcan.png',
+        type: 'breakable', ragdoll: true, collision: true, breakable: true, hitsToBreak: 3
+    },
+    {
+        x: 600, y: 300, width: 30, height: 60, img: 'images/decoration/sign.png',
+        type: 'breakable', ragdoll: true, collision: true, breakable: true, hitsToBreak: 2
+    },
+    // 3) Small unbreakable objects (e.g. tree, kiosk)
+    {
+        x: 800, y: 100, width: 36, height: 36, img: 'images/decoration/tree.png',
+        type: 'small', ragdoll: false, collision: true, breakable: false
+    },
+    {
+        x: 900, y: 200, width: 60, height: 40, img: 'images/decoration/kiosk.png',
+        type: 'small', ragdoll: false, collision: true, breakable: false
+    },
+    // 4) Decal elements (no collision)
+    {
+        x: 1200, y: 300, width: 80, height: 40, img: 'images/decoration/road_paint.png',
+        type: 'decal', ragdoll: false, collision: false, breakable: false
+    },
+    {
+        x: 1300, y: 400, width: 50, height: 50, img: 'images/decoration/leaf_pile.png',
+        type: 'decal', ragdoll: false, collision: false, breakable: false
+    }
+];
+
+export { buildings, zones, decorations }; 
