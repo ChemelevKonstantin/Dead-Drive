@@ -1,41 +1,60 @@
 // Example buildings template for city layout
 // Each building has x, y, width, height (multiples of 100), and img
 const buildings = [
-    // Row 1
-    { x: -800, y: -1000, width: 200, height: 200, img: 'images/buildings/b10.png' },
-    { x: -500, y: -1000, width: 300, height: 200, img: 'images/buildings/b2.png' },
-    { x: -100, y: -1000, width: 200, height: 300, img: 'images/buildings/b1.png' },
-    { x: 250, y: -1000, width: 300, height: 300, img: 'images/buildings/b11.png' },
-    { x: 600, y: -1000, width: 400, height: 200, img: 'images/buildings/b4.png' },
+    // FANCE
+    { x: -4000, y: -2700, width: 7000, height: 300, img: 'images/buildings/fance.png' },
+    { x: -4000, y: -2700, width: 300, height: 6000, img: 'images/buildings/fance.png' },
+    { x: 3000, y: -2700, width: 300, height: 6000, img: 'images/buildings/fance.png' },
+    { x: -4000, y: 3300, width: 7000, height: 300, img: 'images/buildings/fance.png' },
+
     // Row 2
-    { x: -800, y: -600, width: 200, height: 400, img: 'images/buildings/b3.png' },
-    { x: -500, y: -600, width: 300, height: 200, img: 'images/buildings/b12.png' },
-    { x: -100, y: -600, width: 200, height: 200, img: 'images/buildings/b5.png' },
-    { x: 250, y: -600, width: 300, height: 200, img: 'images/buildings/b13.png' },
-    { x: 600, y: -600, width: 400, height: 100, img: 'images/buildings/b8.png' },
+    { x: 800, y: -1800, width: 260, height: 700, img: 'images/buildings/b3.png' },
+    { x: 1060, y: -1800, width: 600, height: 300, img: 'images/buildings/b4.png' },
+    { x: 1660, y: -1800, width: 240, height: 1400, img: 'images/buildings/b7.png' },
+    { x: -100, y: -440, width: 2000, height: 240, img: 'images/buildings/b8.png' },
+    { x: 1000, y: -800, width: 100, height: 100, img: 'images/buildings/b9.png' },
+
+    { x: -2130, y: -1320, width: 240, height: 920, img: 'images/buildings/b10.png' },
+    { x: -2700, y: -620, width: 570, height: 220, img: 'images/buildings/b10.png' },
+
+    { x: -3280, y: -680, width: 300, height: 1360, img: 'images/buildings/b10.png' },
+
+    { x: -3280, y: -2240, width: 300, height: 1300, img: 'images/buildings/b10.png' },
+    { x: -2980, y: -2240, width: 920, height: 240, img: 'images/buildings/b10.png' },
+    { x: -2360, y: -2000, width: 300, height: 300, img: 'images/buildings/b10.png' },
+    { x: -2740, y: -960, width: 200, height: 200, img: 'images/buildings/b10.png' },
+
+    { x: -2520, y: 40, width: 380, height: 380, img: 'images/buildings/b10.png' },
+
     // Row 3
-    { x: -800, y: -100, width: 200, height: 200, img: 'images/buildings/b19.png' },
-    { x: -500, y: -100, width: 300, height: 300, img: 'images/buildings/b6.png' },
-    { x: 100, y: 100, width: 200, height: 300, img: 'images/buildings/b14.png' },
-    { x: 250, y: -100, width: 300, height: 200, img: 'images/buildings/b9.png' },
-    { x: 600, y: -100, width: 400, height: 200, img: 'images/buildings/b20.png' },
-    // Row 4
-    { x: -800, y: 400, width: 200, height: 400, img: 'images/buildings/b15.png' },
-    { x: -500, y: 400, width: 300, height: 300, img: 'images/buildings/b7.png' },
-    { x: -100, y: 400, width: 200, height: 200, img: 'images/buildings/b16.png' },
-    { x: 250, y: 400, width: 300, height: 200, img: 'images/buildings/b17.png' },
-    { x: 600, y: 400, width: 400, height: 300, img: 'images/buildings/b18.png' },
-    // Row 5
-    { x: -800, y: 900, width: 200, height: 200, img: 'images/buildings/b3.png' },
-    { x: -500, y: 900, width: 300, height: 200, img: 'images/buildings/b12.png' },
-    { x: -100, y: 900, width: 200, height: 200, img: 'images/buildings/b5.png' },
-    { x: 250, y: 900, width: 300, height: 200, img: 'images/buildings/b13.png' },
-    { x: 600, y: 900, width: 400, height: 200, img: 'images/buildings/b8.png' }
+    { x: -1560, y: -1220, width: 340, height: 340, img: 'images/buildings/b10.png' },
+
+    { x: -940, y: -240, width: 240, height: 260, img: 'images/buildings/b11.png' },
+    { x: -1700, y: -440, width: 1000, height: 200, img: 'images/buildings/b13.png' },
+    { x: -1700, y: -240, width: 240, height: 260, img: 'images/buildings/b12.png' },
+
+    { x: -940, y: 380, width: 240, height: 260, img: 'images/buildings/b11.png' },
+    { x: -1700, y: 640, width: 1000, height: 200, img: 'images/buildings/b13.png' },
+    { x: -1700, y: 380, width: 240, height: 260, img: 'images/buildings/b12.png' },
+
+    { x: -330, y: 80, width: 320, height: 320, img: 'images/buildings/b17.png' },
+    { x: 400, y: 140, width: 1200, height: 200, img: 'images/buildings/b18.png' },
+
+    { x: -1360, y: 1400, width: 340, height: 340, img: 'images/buildings/b19.png' },
+
+    { x: -760, y: 1120, width: 200, height: 200, img: 'images/buildings/b17.png' },
+    { x: 720, y: 1200, width: 160, height: 160, img: 'images/buildings/b17.png' },
+
+    { x: 0, y: 700, width: 1500, height: 200, img: 'images/buildings/b20.png' },
+    { x: 1300, y: 900, width: 200, height: 900, img: 'images/buildings/b21.png' },
+    { x: -500, y: 1600, width: 1800, height: 200, img: 'images/buildings/b22.png' }
 ];
 
 // Example ground zones (different surface types)
 const zones = [
-    { x: -400, y: 100, width: 300, height: 200, type: 'grass' },
+    { x: -680, y: 100, width: 300, height: 200, type: 'grass' },
+    { x: -680, y: 900, width: 400, height: 400, type: 'grass' },
+    { x: -1800, y: 500, width: 800, height: 1100, type: 'grass' },
     { x: 200, y: 200, width: 200, height: 100, type: 'sand' }
     // ...add more zones as needed
 ];
@@ -59,25 +78,29 @@ const decorations = [
         type: 'breakable', ragdoll: true, collision: true, breakable: true, hitsToBreak: 3
     },
     {
-        x: 600, y: 300, width: 30, height: 60, img: 'images/decoration/sign.png',
+        x: 600, y: 220, width: 30, height: 60, img: 'images/decoration/sport.png',
         type: 'breakable', ragdoll: true, collision: true, breakable: true, hitsToBreak: 2
     },
     // 3) Small unbreakable objects (e.g. tree, kiosk)
     {
-        x: 800, y: 100, width: 36, height: 36, img: 'images/decoration/tree.png',
+        x: 800, y: 200, width: 36, height: 36, img: 'images/decoration/tree.png',
         type: 'small', ragdoll: false, collision: true, breakable: false
     },
     {
-        x: 900, y: 200, width: 60, height: 40, img: 'images/decoration/kiosk.png',
+        x: 1100, y: 240, width: 60, height: 40, img: 'images/decoration/kiosk.png',
         type: 'small', ragdoll: false, collision: true, breakable: false
     },
     // 4) Decal elements (no collision)
     {
-        x: 1200, y: 300, width: 80, height: 40, img: 'images/decoration/road_paint.png',
+        x: 1140, y: -100, width: 140, height: 100, img: 'images/decoration/cafe_enjoy.png',
         type: 'decal', ragdoll: false, collision: false, breakable: false
     },
     {
-        x: 1300, y: 400, width: 50, height: 50, img: 'images/decoration/leaf_pile.png',
+        x: 1200, y: 420, width: 100, height: 100, img: 'images/decoration/lotok.png',
+        type: 'decal', ragdoll: false, collision: false, breakable: false
+    },
+    {
+        x: 440, y: 420, width: 100, height: 100, img: 'images/decoration/lotok.png',
         type: 'decal', ragdoll: false, collision: false, breakable: false
     }
 ];

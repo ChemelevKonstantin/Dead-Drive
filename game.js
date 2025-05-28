@@ -59,7 +59,7 @@ const zoneTypes = {
 };
 
 // Damage system
-let carHealth = 100;
+// let carHealth = 100;
 let lastCollisionTime = 0;
 let playerHealth = 100;
 
@@ -201,7 +201,7 @@ cars.push({
     vy: 0,
     steer: 0,
     img: 'images/cars/car1.png',
-    health: 100
+    health: 300
 });
 activeCar = cars[0];
 
@@ -228,6 +228,7 @@ document.addEventListener('keydown', (e) => {
                 // Try to enter an abandoned car
                 for (let i = 0; i < abandonedCars.length; i++) {
                     const a = abandonedCars[i];
+                    if (a.destroyed) continue;
                     const dx = player.x - a.x;
                     const dy = player.y - a.y;
                     if (Math.sqrt(dx*dx + dy*dy) < 80) {
@@ -267,7 +268,7 @@ document.addEventListener('keydown', (e) => {
                             vy: 0,
                             steer: 0,
                             img: a.img,
-                            health: (typeof a.health === 'number') ? a.health : 100
+                            health: (typeof a.health === 'number') ? a.health : 300
                         };
                         if (a.fireParticles) {
                             carFireParticles = a.fireParticles.slice();
@@ -317,7 +318,7 @@ function circleCarCollision(px, py, pr, car) {
 
 // ZOMBIE AI
 const zombies = [];
-const zombieCount = 100;
+const zombieCount = 400;
 const ZOMBIE_DETECTION_RANGE = 500;
 let zombieTries = 0;
 for (let i = 0; i < zombieCount && zombieTries < zombieCount * 10; ) {
@@ -884,6 +885,7 @@ let bloodyTiresTimer = 0;
 let decorationRagdolls = [];
 
 function update() {
+    if (gameOver || gameWon) return;
     if (!inCar) {
         // On foot movement with collision
         let moveX = 0, moveY = 0;
@@ -1003,6 +1005,15 @@ function update() {
                     player.y = ay + ny * minDist;
                 }
             }
+        }
+        // At the end of update, check for player death
+        if (playerHealth <= 0 && !gameOver) {
+            playerHealth = 0;
+            gameOver = true;
+        }
+        // Check for win condition
+        if (zombies.length === 0 && !gameWon) {
+            gameWon = true;
         }
         return;
     }
@@ -1343,6 +1354,38 @@ function update() {
             break;
         }
     }
+
+    // Car destruction logic
+    if (activeCar.health <= 0 && !activeCar.destroyed) {
+        // Trigger explosion effect
+        spawnCarExplosion(activeCar.worldX, activeCar.worldY, activeCar.width, activeCar.height);
+        // Add to abandonedCars as destroyed
+        abandonedCars.push({
+            x: activeCar.worldX,
+            y: activeCar.worldY,
+            angle: activeCar.angle,
+            img: activeCar.img,
+            width: activeCar.width,
+            height: activeCar.height,
+            health: 0,
+            destroyed: true
+        });
+        // Remove from drivable cars
+        cars.splice(cars.indexOf(activeCar), 1);
+        inCar = false;
+        activeCar.destroyed = true;
+        // Place player outside car
+        const angleRad = activeCar.angle * Math.PI / 180;
+        const exitDistance = (activeCar.width / 2 + player.radius) * 2;
+        player.x = activeCar.worldX + Math.cos(angleRad - Math.PI / 2) * exitDistance;
+        player.y = activeCar.worldY + Math.sin(angleRad - Math.PI / 2) * exitDistance;
+        activeCar.vx = 0;
+        activeCar.vy = 0;
+        // Switch to another car if available
+        if (cars.length > 0) {
+            activeCar = cars[0];
+        }
+    }
 }
 
 function drawGrid() {
@@ -1370,7 +1413,7 @@ function drawGrid() {
 
 // Preload car images for all possible car types
 const carImgs = {};
-['images/cars/car1.png', 'images/cars/car2.png', 'images/cars/car3.png', 'images/cars/car4.png'].forEach(src => {
+['images/cars/car1.png', 'images/cars/car2.png', 'images/cars/car3.png', 'images/cars/car4.png', 'images/cars/car5.png', 'images/cars/car6.png', 'images/cars/car7.png', 'images/cars/car8.png', 'images/cars/car9.png'].forEach(src => {
     const img = new window.Image();
     img.src = src;
     carImgs[src] = img;
@@ -1387,7 +1430,13 @@ function drawCar() {
     ctx.globalAlpha = 0.22;
     ctx.filter = 'blur(4px)';
     ctx.fillStyle = '#000';
-    ctx.fillRect(-activeCar.width / 2, -activeCar.height / 2, activeCar.width + 8, activeCar.height + 8);
+    // Draw rounded rectangle for shadow
+    const shadowW = activeCar.width + 8;
+    const shadowH = activeCar.height + 8;
+    const shadowR = Math.min(shadowW, shadowH) * 0.22;
+    ctx.beginPath();
+    roundedRectPath(ctx, -activeCar.width / 2, -activeCar.height / 2, shadowW, shadowH, shadowR);
+    ctx.fill();
     ctx.filter = 'none';
     ctx.restore();
     // Draw car image or fallback
@@ -1733,8 +1782,9 @@ function drawBackground() {
     const startX = worldOffsetX - canvas.width / 2;
     const startY = worldOffsetY - canvas.height / 2;
     // Find the first tile to draw (may be negative)
-    const offsetX = -((startX % tileW) + tileW) % tileW;
-    const offsetY = -((startY % tileH) + tileH) % tileH;
+    // Shift background 200px to the left
+    const offsetX = -((startX % tileW) + tileW) % tileW - 4400;
+    const offsetY = -((startY % tileH) + tileH) % tileH - 3680;
     for (let x = offsetX; x < canvas.width; x += tileW) {
         for (let y = offsetY; y < canvas.height; y += tileH) {
             ctx.drawImage(bgImg, x, y, tileW, tileH);
@@ -2060,9 +2110,14 @@ function drawCarFireParticles() {
 
 // Abandoned cars as background props
 const abandonedCars = [
-    { x: 180, y: -120, angle: 0, img: 'images/cars/car2.png', width: 48, height: 84 },
-    { x: -220, y: -180, angle: 0, img: 'images/cars/car3.png', width: 48, height: 84 },
-    { x: 60, y: 200, angle: 0, img: 'images/cars/car4.png', width: 48, height: 84 }
+    { x: 880, y: -60, angle: 0, img: 'images/cars/car2.png', width: 48, height: 84 },
+    { x: 620, y: -100, angle: 0, img: 'images/cars/car3.png', width: 48, height: 84 },
+    { x: 120, y: 400, angle: 90, img: 'images/cars/car4.png', width: 60, height: 100 },
+    { x: 1100, y: 20, angle: 0, img: 'images/cars/car5.png', width: 48, height: 84 },
+    { x: 300, y: 200, angle: 15, img: 'images/cars/car6.png', width: 48, height: 84 },
+    { x: 400, y: 600, angle: -30, img: 'images/cars/car7.png', width: 48, height: 84 },
+    { x: -600, y: -400, angle: 45, img: 'images/cars/car8.png', width: 60, height: 100 },
+    { x: 1000, y: 300, angle: 0, img: 'images/cars/car9.png', width: 48, height: 84 }
 ];
 const abandonedCarImgs = {};
 for (const a of abandonedCars) {
@@ -2091,12 +2146,17 @@ function drawAbandonedCars() {
         ctx.filter = 'none';
         ctx.restore();
         // Draw car image or fallback
-        const img = abandonedCarImgs[a.img];
-        if (img && img.complete && img.naturalWidth > 0) {
-            ctx.drawImage(img, -a.width / 2, -a.height / 2, a.width, a.height);
-        } else {
-            ctx.fillStyle = '#888';
+        if (a.destroyed) {
+            ctx.fillStyle = '#111';
             ctx.fillRect(-a.width / 2, -a.height / 2, a.width, a.height);
+        } else {
+            const img = abandonedCarImgs[a.img];
+            if (img && img.complete && img.naturalWidth > 0) {
+                ctx.drawImage(img, -a.width / 2, -a.height / 2, a.width, a.height);
+            } else {
+                ctx.fillStyle = '#888';
+                ctx.fillRect(-a.width / 2, -a.height / 2, a.width, a.height);
+            }
         }
         // Draw fire particles for this abandoned car
         if (a.fireParticles && a.fireParticles.length > 0) {
@@ -2113,15 +2173,6 @@ function drawAbandonedCars() {
                 ctx.restore();
             }
         }
-        // Draw collision border (debug)
-        ctx.save();
-        ctx.globalAlpha = 0.5;
-        ctx.strokeStyle = '#00f';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(0, 0, (a.width + a.height) / 4, 0, 2 * Math.PI);
-        ctx.stroke();
-        ctx.restore();
         ctx.restore();
     }
     ctx.restore();
@@ -2169,6 +2220,9 @@ if (!inCar) {
 const knifeImg = new window.Image();
 knifeImg.src = 'images/knife.png';
 
+let gameOver = false;
+let gameWon = false;
+
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
@@ -2188,14 +2242,19 @@ function gameLoop() {
     updateCarBloodSplats();
     updateCarFireParticles();
     updateDecorationPhysics();
-    update();
+    if (!gameOver && !gameWon) update();
     drawCar();
-    // Draw melee swing arc just before player
     drawMeleeSwing();
     drawPlayer();
     drawHealthBar();
+    // Force win if counter is zero
+    if (zombies.length === 0 && !gameWon) {
+        gameWon = true;
+    }
     drawDecorationRagdolls();
     updateDecorationRagdolls();
+    drawGameOver();
+    drawWin();
     requestAnimationFrame(gameLoop);
 }
 
@@ -2232,4 +2291,69 @@ function drawMeleeSwing() {
     ctx.restore();
 }
 
-gameLoop(); 
+// Helper function for rounded rectangle path
+function roundedRectPath(ctx, x, y, w, h, r) {
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+}
+
+// Explosion effect for car destruction
+function spawnCarExplosion(x, y, w, h) {
+    for (let i = 0; i < 32; i++) {
+        let angle = Math.random() * 2 * Math.PI;
+        let speed = 2 + Math.random() * 6;
+        sparks.push({
+            x: x + (Math.random()-0.5)*w/2,
+            y: y + (Math.random()-0.5)*h/2,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            alpha: 0.7 + Math.random()*0.3,
+            life: 20 + Math.random() * 10
+        });
+    }
+}
+
+function drawGameOver() {
+    if (!gameOver) return;
+    ctx.save();
+    ctx.globalAlpha = 0.92;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+    ctx.font = 'bold 80px Arial';
+    ctx.fillStyle = '#f00';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+    ctx.font = '32px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.fillText('Press F5 to Restart', canvas.width / 2, canvas.height / 2 + 70);
+    ctx.restore();
+}
+
+function drawWin() {
+    if (!gameWon) return;
+    ctx.save();
+    ctx.globalAlpha = 0.92;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+    ctx.font = 'bold 80px Arial';
+    ctx.fillStyle = '#0f0';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('YOU WIN!', canvas.width / 2, canvas.height / 2);
+    ctx.font = '32px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.fillText('Press F5 to Restart', canvas.width / 2, canvas.height / 2 + 70);
+    ctx.restore();
+}
+
+gameLoop();
